@@ -10,7 +10,6 @@
 	import { HEADACHE_LOCATIONS, POTENTIAL_CAUSES, TIMES } from '$convex/schema';
 	import Button from '@/components/ui/button/button.svelte';
 	import * as Entries from '$lib/remote/entries.remote';
-	import * as Auth from '$lib/remote/auth.remote';
 	import HeadacheChart from '@/components/headache-chart.svelte';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import Spinner from '@/components/ui/spinner/spinner.svelte';
@@ -27,7 +26,7 @@
 <main class="flex grid-cols-3 flex-col gap-4 p-6 md:grid">
 	<Card.Root>
 		<Card.Content>
-			{#if !entryToday}
+			{#if !entryToday.data}
 				<form {...Entries.add}>
 					<Field.Set>
 						<Field.Legend>New entry</Field.Legend>
