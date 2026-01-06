@@ -1,5 +1,5 @@
-import { ConvexError } from 'convex/values';
 import { mutation, query } from './_generated/server';
+import { api } from './_generated/api';
 import { entrySchemaConvex } from './schema';
 
 export const getAll = query({
@@ -11,10 +11,9 @@ export const getAll = query({
 	}
 });
 
-export const create = mutation({
-	args: entrySchemaConvex,
-	handler: async (ctx, args) => {
-		// Get the start of today (midnight) in milliseconds
+export const getToday = query({
+	args: {},
+	handler: async (ctx) => {
 		const startOfDay = new Date();
 		startOfDay.setHours(0, 0, 0, 0);
 		const startOfToday = startOfDay.getTime();
@@ -24,7 +23,6 @@ export const create = mutation({
 		endOfDay.setHours(23, 59, 59, 999);
 		const endOfToday = endOfDay.getTime();
 
-		// Query entries created today (between start and end of day)
 		const todaysEntries = await ctx.db
 			.query('entries')
 			.filter((q) =>
@@ -35,8 +33,20 @@ export const create = mutation({
 			)
 			.collect();
 
+		return todaysEntries;
+	}
+});
+
+export const create = mutation({
+	args: entrySchemaConvex,
+	handler: async (ctx, args) => {
+		// Get the start of today (midnight) in milliseconds
+
+		// Query entries created today (between start and end of day)
+		const todaysEntries = await ctx.runQuery(api.entries.getToday);
+
 		if (todaysEntries.length != 0) {
-			throw new ConvexError('There already is an entry for today');
+			return new Response('there already is an entry for today');
 		}
 
 		// Create the new entry

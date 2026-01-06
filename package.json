@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"dev:convex": "convex dev",
+		"convex:dev": "convex dev",
+		"convex:deploy": "convex deploy",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -46,10 +47,12 @@
 	},
 	"dependencies": {
 		"@types/d3-scale": "^4.0.9",
+		"@types/d3-shape": "^3.1.7",
 		"convex": "^1.31.2",
 		"convex-helpers": "^0.1.108",
 		"convex-svelte": "^0.0.12",
 		"d3-scale": "^4.0.2",
+		"d3-shape": "^3.2.0",
 		"dayjs": "^1.11.19",
 		"zod": "^4.3.5"
 	}
