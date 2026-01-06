@@ -2,7 +2,7 @@ import { mutation, query } from './_generated/server';
 import { api } from './_generated/api';
 import { entrySchemaConvex } from './schema';
 
-export const getAll = query({
+export const getLastWeek = query({
 	args: {},
 	handler: async (ctx) => {
 		const tasks = await ctx.db.query('entries').collect();
@@ -33,7 +33,10 @@ export const getToday = query({
 			)
 			.collect();
 
-		return todaysEntries;
+		if (todaysEntries.length === 0) {
+			return false;
+		}
+		return true;
 	}
 });
 
@@ -43,9 +46,9 @@ export const create = mutation({
 		// Get the start of today (midnight) in milliseconds
 
 		// Query entries created today (between start and end of day)
-		const todaysEntries = await ctx.runQuery(api.entries.getToday);
+		const entryToday = await ctx.runQuery(api.entries.getToday);
 
-		if (todaysEntries.length != 0) {
+		if (entryToday) {
 			return new Response('there already is an entry for today');
 		}
 
