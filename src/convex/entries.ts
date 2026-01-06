@@ -1,12 +1,29 @@
 import { mutation, query } from './_generated/server';
 import { api } from './_generated/api';
 import { entrySchemaConvex } from './schema';
+import dayjs from 'dayjs';
 
 export const getLastWeek = query({
 	args: {},
 	handler: async (ctx) => {
-		const tasks = await ctx.db.query('entries').collect();
+		const tasks = await ctx.db
+			.query('entries')
+			.filter((q) =>
+				q.gte(
+					q.field('_creationTime'),
+					dayjs().subtract(1, 'week').startOf('day').toDate().getTime()
+				)
+			)
+			.collect();
 
+		return tasks;
+	}
+});
+
+export const getAll = query({
+	args: {},
+	handler: async (ctx) => {
+		const tasks = await ctx.db.query('entries').collect();
 		return tasks;
 	}
 });
